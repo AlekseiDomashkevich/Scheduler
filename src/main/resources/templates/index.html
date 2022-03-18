@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Scheduler</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+
+        td {
+            margin: 0px;
+            width: 150px;
+            height: 60px;
+            border: solid 3px silver;
+            text-align: center;
+        }
+
+        body {
+
+            min-height: 75rem;
+            padding-top: 4.5rem;
+        }
+
+    </style>
+
+</head>
+<body>
+<div class="container">
+
+    <nav class="navbar fixed-top navbar-dark bg-primary ">
+        <div class="container-fluid">
+
+
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle " type="button" id="dropdownMenuButton1"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                    -
+
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item" href="#">Действие</a></li>
+                    <li><a class="dropdown-item" href="#">Другое действие</a></li>
+                    <li><a class="dropdown-item" href="#">Что-то еще здесь</a></li>
+                </ul>
+            </div>
+
+            <button type="button " class="btn btn-light btn-rounded" data-bs-toggle="modal"
+                    data-bs-target="#newEventModal">New Event
+            </button>
+        </div>
+    </nav>
+
+
+    <table class="table table-success table-striped  border border-3 border-dark align-middle text-center">
+        <thead>
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col" class="border border-3 border-dark " th:each="room : ${rooms}" th:text="${room.name}"></th>
+        </tr>
+        </thead>
+
+        <tr class="border border-3 border-dark " th:each="date : ${dates}">
+            <td class="border border-3 border-dark " th:text="${#temporals.format(date, 'dd.MM.yyyy')}"></td>
+            <td class="border border-3 border-dark " th:each="room : ${rooms}">
+                <div class="border-bottom border-1 border-dark "
+                     th:each="event : ${service.getEventByDateAndRoom(date, room)}">
+                    <a th:href="@{edit/{id}(id = ${event.id})}">
+                        <div>
+                            <p th:text="${event.getStart()} + ' - ' + ${event.getStop()}"></p>
+                            <p th:text="${event.info}"></p>
+                        </div>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="modal fade" id="newEventModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">New Event</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="row g-3" method="post" action="/" id="save">
+                        <div class="col-md-3">
+                            <label for="room" class="form-label">Room</label>
+                            <select name="room" class="form-control" id="room">
+                                <option th:each="room : ${rooms}" th:value="${room.id}" th:text="${room.name}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-9">
+                            <label class="form-label" for="date">Date</label>
+                            <input class="form-control" type="date" name="date" id="date" th:field="${newEvent.date}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="start" class="form-label">Start</label>
+                            <input class="form-control" type="time" name="start" id="start"
+                                   th:field="${newEvent.start}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="end" class="form-label">End</label>
+                            <input class="form-control" type="time" name="end" id="end" th:field="${newEvent.stop}">
+                        </div>
+                        <div class="col-md-12">
+                            <label for="info" class="form-label">Info</label>
+                            <input class="form-control" type="text" name="info" id="info" th:field="${newEvent.info}">
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" form="save">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>
