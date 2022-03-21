@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,9 @@ public class EventService {
 
 
     public List<Event> getEventByDateAndRoom(LocalDate date, Room room) {
-        return repository.getByDateAndRoom(date, room);
+        return repository.getByDateAndRoom(date, room).stream()
+                .sorted(Comparator.comparing(Event::getStart))
+                .collect(Collectors.toList());
     }
 
     public List<LocalDate> getDates() {
