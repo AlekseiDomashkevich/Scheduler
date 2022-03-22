@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 @Controller
@@ -42,25 +41,13 @@ public class EventController {
         return "redirect:/";
     }
 
-    @GetMapping("/new")
-    public String newEvent(@ModelAttribute("newEvent") Event newEvent, Model model){
-//        model.addAttribute("newEvent", newEvent);
-        model.addAttribute("rooms", roomRepository.findAll());
-        return "new_event";
-    }
-
-    @PostMapping("/save")
-    public String save(@ModelAttribute ("newEvent") Event newEvent){
-        eventRepository.save(newEvent);
-        return "redirect:/";
-    }
 
     @GetMapping("/edit/{id}")
     public String editEvent(Model model, @PathVariable("id") long id){
         var event = eventRepository.getById(id);
         model.addAttribute("event", event);
         model.addAttribute("rooms", roomRepository.findAll());
-        return "edit";
+        return "event/edit";
     }
 
     @PatchMapping("/edit/{id}")
